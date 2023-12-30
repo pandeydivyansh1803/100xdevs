@@ -1,0 +1,305 @@
+ECMAscript
+ECMAscript is a scripting language specification on which JS is based. In simpler terms it's a doc which states what all
+things a JS engine should support. It keeps getting updated time to time as and when new features are added.
+
+Javascript: The implementation
+JavaScript is a scripting language that conforms to the ECMAscript specification. It's the most widelyn known and used 
+implementation of ECMAScript.
+JS inlcudes additional features that are not part of the ECMAScript specification, like the DOM manipulatoion  , which is 
+crucial for web dev but is not defined by ECMAScript.
+
+V8 Engine: V8 is an open-source JS engine developed by Chromium project for Google Chrome and Chromium web browsers. It's written in C++ and is responssible for commpiling JS code into native machine code before executing it, which greatly improvise
+performance. Generally JS is interpreted but v8 engine compiles it.
+
+Scripting vs Programming language
+(JS is a scripting language).
+
+
+Node.js
+some smart people took out the V8 engine . Added some Backend things (file system reads and http servers) on top to create a
+new runtime to compete with BE languages like Java.
+JS was never meant to be run in the backend . Eventurally became very popular and is a popular choice of runtime on backend.
+Node.js is not language but a runtime for JS with additional features of JS.
+
+
+
+
+What can u do with Node.js??
+1) Create Clis (commoand line interpreter)
+2) create video player
+3) create game
+4) create HTTP server
+
+
+HTTP (hyper text transfer protocol)
+1) A protocol that is defined for machines to communicate.
+2) Specifically, for websites it is the most common way for your website's frontend to communicate to it's backend.
+
+
+HTTP server
+some code that follows the http protocol and is able to communicate with the clients( browsers,mobile apps ).
+
+
+Thing client needs to worry about while sending a request
+1) Protocol (HTTP/HTTPS)
+2) Address (url/ip/port)
+3) Route
+4) Headers, body, query parameters
+5) methods
+
+
+eg: 
+https://chat.openai.com/backend-api/conversation
+
+https://                   this is protocol
+chat.openai.com            is url
+backend-api/conversation   is route
+
+header - cookie - 123as@332SD3@
+body - what is 2+2
+method: post get etc
+
+Things server needs to worry about while sending a response back
+1) Response headers
+2) Response body
+3) Status codes
+
+
+Things that happen in your browser after you fire a request ??
+(we will later see how to fire a request)
+1) browser parses the url
+2) Does a DNS lookup ( converts google.com to an IP)
+3) Establishes a connection to the IP( does a handshake....)
+
+
+DNS : domain name service resolution
+domains names is mapped to IP
+
+
+Things that happens on ur server after you receive the request
+1) you get inputs( routes, body, headers)
+2) you do some logic on the i/p , calculate the o/p
+3) return the response body , headers and status code
+
+
+Common methods to backend servers
+1> GET
+2> POST
+3> PUT
+4> DELETE
+
+Status codes
+1) 200 - everything is OK
+2) 404 - Page/route not found
+3) 403 - authentication issues
+4) 500 - internal server error
+5) 411 - inputs are incorrect
+
+
+
+ctrl+` to open terminal in vs code.
+
+
+*****Global variables in node*****
+node js doesnt have window
+
+
+__dirname   - path to current directory
+__filename  - filename
+process   - info about current module (file)
+require   - function to use modules (common js)
+module    - info about environment where the program is being executed
+
+code:
+console.log(__dirname);
+console.log(__filename);
+console.log(process);
+
+setTimeout(()=>{
+    console.log(`hello world`)
+}, 1000);
+
+
+*****Module*****
+It's not neccessary to keep all code in a single file , rather we store it in different modules and export the neccessary
+functions and data.
+
+modules - encapsulated code only share minimum
+CommonJS - every file is module by default
+
+
+sayHi function is in a different module(file ) 5-utils.js
+john and peter are in a different module(file) 4-names.js
+
+
+require('./4-names')
+module.exports={}
+or module.exports= sayHi;
+
+keep one thing in mind whenever u import a module , you actually invoke it
+hence the code inside that module runs and if any function call then it 
+gets executed
+
+
+
+*****Built in modules***** (get details about the function in each of these built in modules from the web)
+1) OS module
+2) path module
+3) fs (file system)
+4) http module
+
+
+npm inti -y (automatically create a default package.json)
+
+
+program 1 --->>> create a hello world server in express
+
+code:
+// step 1: run command on terminal
+// npm install express
+
+
+
+// importing express package
+const express = require('express')
+
+// express() this function creates an express application
+const app = express();
+
+
+const bodyParser = require('body-parser')
+app.use(bodyParser.json());
+//app.use(express.json());
+
+const port = 3000
+
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
+
+
+// we can also send js object on res
+app.get('/request-handler',(req,res)=>{
+    res.json({
+        name : "DP1803",
+        age : "OG"
+    });
+})
+
+// we can also send html back on res
+app.get('/route-handler',(req,res)=>{
+    res.send('<h1>Hello world</h1>');
+})
+
+app.post('/post-handler',(req,res)=>{
+    console.log(req.headers)
+    // this gives undefined with the req.body
+    // to handle this at the top write
+    // app.use(express.json())
+    // we can also use body-parser for the same
+    // npm install body-parser
+    // const bodyParser = require('body-parser')
+    // app.use(bodyParser.json())
+    console.log(req.body)
+
+    res.send('<h3>hello world</h3>');
+})
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})
+code end.
+
+
+
+why do we need ports??
+what if we have 2 http servers on our machine , so each of them can listen to different ports .
+
+
+NOTE: JS is single threaded so it handles only one request at a time , but what happens is during a request we use async nature of js so the work that takes longer time to perform like db calls is offloaded and hence the JS thread picks another 
+request but mark that at a time only request is handled by JS thread
+
+NOTE: http requests can be sent by browser, mobile applications or another node js app
+NOTE: when we send requests only from node js app then use rest api
+
+
+
+*****POST requests headers and body??*****
+we can send post requests using postman
+each post request has a header and a body
+we can use the header to get information related to authetication and other things
+we can also use req body to get the msg given to server
+
+code:
+app.post('/post-handler',(req,res)=>{
+    console.log(req.headers)
+    // this gives undefined with the req.body
+    // to handle this at the top write
+    // app.use(express.json())
+    console.log(req.body)
+
+    res.send('<h3>hello world</h3>');
+})
+code end.
+
+
+
+******query parameters??******
+query paramas is used when we want to send some info to backend with a get request
+url is given below for a get request
+localhost:3000/post-handler?message="ab"&c=2
+
+to access the query parameters
+const msg=req.query.message;
+
+
+NOTE: for https port 443 is used
+
+
+splice method for array in js
+array.splice(ind,ct,item1,item2...)
+ind is the index
+ct is the number of elements to be removed from ind1 (inclusive)
+item1,item2... are the items to be added
+
+
+
+map functions with arrays in js
+map takes 2 i/ps
+array and tranformation function as callback
+map then creates a new array by applying transformation
+function on each of the array elements and returns new array created
+
+given an array, give me back a new array where everything 
+is multiplied by 2
+
+code:
+const array = [1,2,3,4,5];
+let new_array=array.map((i)=>{
+    return i*2;
+})
+console.log(new_array);
+end.
+
+
+filter function  with array in js
+filter function takes 2 ips
+first is the array on which we need to filter values
+the filtering function which decides whether we need to include 
+a given element in new filtered array or not
+the filtering logic returns true if have to include the 
+given element in new_array otherwise returns false
+filter function gives a filtered array as an output
+
+code:
+const array = [1,2,3,4,5];
+const new_array = array.filter((ele)=>{
+    if(ele%2==0){
+        return true;
+    }else{
+        return false;
+    }
+})
+
+console.log(new_array)
+end.
